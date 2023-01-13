@@ -14,18 +14,18 @@ export default defineComponent({
     URL: 'https://api.javascripttutorial.net/v1/quotes/?page=${page}&limit=${limit}',
     currentPage: 1,
     limit: 10,
-    totalItems: 0,
+    total: 0,
     items: []
   },
   methods: {
     handleScroll: function (){
       /*
       console.log('handleScroll currentPage', currentPage);
-      console.log('handleScroll totalItems', totalItems);
+      console.log('handleScroll total', total);
       console.log('handleScroll(currentPage - 1) * 10', (currentPage - 1) * 10);
       console.log('intervalID', intervalID);
       */
-      if (document.documentElement.scrollTop + document.documentElement.clientHeight >= document.documentElement.scrollHeight - 5 && (this.currentPage - 1) * 10 < this.totalItems){
+      if (document.documentElement.scrollTop + document.documentElement.clientHeight >= document.documentElement.scrollHeight - 5 && (this.currentPage - 1) * 10 < this.total){
         if (this.intervalID === null){
           this.intervalID = setTimeout(this.loadQuotes, 500);
         }
@@ -40,7 +40,7 @@ export default defineComponent({
       oReq.addEventListener('load', function () {
         //console.log('returning', this.responseText)
         var json = JSON.parse(this.responseText)
-        that.totalItems = json.total;
+        that.total = json.total;
         that.currentPage++;
         console.log('that.items', that.items);
         that.items.push(...json.data);
