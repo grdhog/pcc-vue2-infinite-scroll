@@ -73,9 +73,9 @@ export default defineComponent({
             </h4>
             <p>{{ item.search_description }}</p>
             <ul class="breadcrumb hidden-print">
-              <li><a href="http://54.252.3.209:8000/">Porirua City</a></li>
-              <li class="active title-tereo">Te Awarua-o-Porirua Harbour FAQs</li>
-            </ul>
+              <li v-for="crumb in item.breadcrumbs"><a :href="crumb.url">{{ crumb.title }}</a></li>
+              <li><a class="active title-tereo" :href="item.url">{{ item.title }}</a></li>
+            </ul>           
             <p class="pcc-promo-j-updated mb-0">Last updated: {{ item.latest_revision_created_at }}</p>
           </div>
         </div>
