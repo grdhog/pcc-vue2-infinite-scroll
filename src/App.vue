@@ -10,18 +10,13 @@ export default defineComponent({
     window.addEventListener('scroll', this.handleScroll)
   },
   filters: {
-    capitalize: function (value) {
-      if (!value) return ''
-      value = value.toString()
-      return value.charAt(0).toUpperCase() + value.slice(1)
-    },
     formatDate: function (value) {
       var months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
       if (!value) return ''
       var d = new Date(Date.parse(value));
       var dateString = d.getDate() + ' ' + months[d.getMonth()] + ' ' +  d.getFullYear();
       return dateString;
-    },
+    }
   },
   data: {
     intervalID: null,
@@ -33,15 +28,18 @@ export default defineComponent({
   },
   methods: {
     handleScroll: function () {
-      /*
-      console.log('handleScroll currentPage', currentPage);
-      console.log('handleScroll total', total);
-      console.log('handleScroll(currentPage - 1) * 10', (currentPage - 1) * 10);
-      console.log('intervalID', intervalID);
-      */
+      //document.documentElement = the root element of the document
+      //scrollTop = scrollbar top 0
+      //clientHeight = height visible area - not total height of page (does not include borders or horizontal scrollbars)
+      //scrollHeight = the height to display element with a scrollbar.
+      console.log('document.documentElement.nodeName', document.documentElement.nodeName);
+      console.log('scrollTop', document.documentElement.scrollTop);
+      console.log('clientHeight', document.documentElement.clientHeight);
+      console.log('scrollHeight', document.documentElement.scrollHeight - 5);
+      // Add the footer height into the formula below.
       if (
         document.documentElement.scrollTop + document.documentElement.clientHeight >=
-          document.documentElement.scrollHeight - 5 &&
+          document.documentElement.scrollHeight - 500 + 5 &&
         (this.currentPage - 1) * 10 < this.total
       ) {
         if (this.intervalID === null) {
@@ -98,8 +96,11 @@ export default defineComponent({
           </div>
         </div>
       </div>
+
     </div>
   </div>
 </template>
 
-<style></style>
+<style>
+
+</style>
