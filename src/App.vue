@@ -11,7 +11,7 @@ export default defineComponent({
   },
   data: {
     intervalID: null,
-    URL: 'https://api.javascripttutorial.net/v1/quotes/?page=${page}&limit=${limit}',
+    URL: 'http://54.252.3.209:8000/search-json/',
     currentPage: 1,
     limit: 10,
     total: 0,
@@ -33,7 +33,8 @@ export default defineComponent({
     },
     loadQuotes: function () {
       console.log('calling loadQuotes')
-      var url = this.URL.replace('${page}', this.currentPage).replace('${limit}', this.limit)
+      //var url = this.URL.replace('${page}', this.currentPage).replace('${limit}', this.limit)
+      var url = this.URL + '?q=Porirua&page=' + this.currentPage;      
       console.log('url', url)
       var oReq = new XMLHttpRequest()
       var that = this
@@ -43,9 +44,8 @@ export default defineComponent({
         that.total = json.total;
         that.currentPage++;
         console.log('that.items', that.items);
-        that.items.push(...json.data);
-        //this.displayQuotes(json.data)
-        that.intervalID = null
+        that.items.push(...json.results);
+        that.intervalID = null;
       })
       oReq.addEventListener('error', function () {
         console.error('API not working!')
@@ -67,16 +67,16 @@ export default defineComponent({
             <h4>
               <a
                 class="pcc-promo-j-link"
-                href="http://54.252.3.209:8000/your-council/city-planning-and-reporting/our-strategic-priorities/healthy-harbour/te-awarua-o-porirua-harbour-faqs/"
-                >#{{i}} {{ item.quote }}</a
+                :href="item.url"
+                >#{{i}} {{ item.title }}</a
               >
             </h4>
-            <p>Contact us if you have more questions about our harbour.</p>
+            <p>{{ item.search_description }}</p>
             <ul class="breadcrumb hidden-print">
               <li><a href="http://54.252.3.209:8000/">Porirua City</a></li>
               <li class="active title-tereo">Te Awarua-o-Porirua Harbour FAQs</li>
             </ul>
-            <p class="pcc-promo-j-updated mb-0">Last updated: 2 August 2019</p>
+            <p class="pcc-promo-j-updated mb-0">Last updated: {{ item.latest_revision_created_at }}</p>
           </div>
         </div>
       </div>
