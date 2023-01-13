@@ -6,8 +6,22 @@ export default defineComponent({
   components: {},
   mounted: function () {
     console.log('mounted')
-    this.loadQuotes();
-    window.addEventListener('scroll', this.handleScroll);
+    this.loadQuotes()
+    window.addEventListener('scroll', this.handleScroll)
+  },
+  filters: {
+    capitalize: function (value) {
+      if (!value) return ''
+      value = value.toString()
+      return value.charAt(0).toUpperCase() + value.slice(1)
+    },
+    formatDate: function (value) {
+      var months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+      if (!value) return ''
+      var d = new Date(Date.parse(value));
+      var dateString = d.getDate() + ' ' + months[d.getMonth()] + ' ' +  d.getFullYear();
+      return dateString;
+    },
   },
   data: {
     intervalID: null,
@@ -15,37 +29,41 @@ export default defineComponent({
     currentPage: 1,
     limit: 10,
     total: 0,
-    items: []
+    items: [],
   },
   methods: {
-    handleScroll: function (){
+    handleScroll: function () {
       /*
       console.log('handleScroll currentPage', currentPage);
       console.log('handleScroll total', total);
       console.log('handleScroll(currentPage - 1) * 10', (currentPage - 1) * 10);
       console.log('intervalID', intervalID);
       */
-      if (document.documentElement.scrollTop + document.documentElement.clientHeight >= document.documentElement.scrollHeight - 5 && (this.currentPage - 1) * 10 < this.total){
-        if (this.intervalID === null){
-          this.intervalID = setTimeout(this.loadQuotes, 500);
+      if (
+        document.documentElement.scrollTop + document.documentElement.clientHeight >=
+          document.documentElement.scrollHeight - 5 &&
+        (this.currentPage - 1) * 10 < this.total
+      ) {
+        if (this.intervalID === null) {
+          this.intervalID = setTimeout(this.loadQuotes, 500)
         }
       }
     },
     loadQuotes: function () {
       console.log('calling loadQuotes')
       //var url = this.URL.replace('${page}', this.currentPage).replace('${limit}', this.limit)
-      var url = this.URL + '?q=Porirua&page=' + this.currentPage;      
+      var url = this.URL + '?q=Porirua&page=' + this.currentPage
       console.log('url', url)
       var oReq = new XMLHttpRequest()
       var that = this
       oReq.addEventListener('load', function () {
         //console.log('returning', this.responseText)
         var json = JSON.parse(this.responseText)
-        that.total = json.total;
-        that.currentPage++;
-        console.log('that.items', that.items);
-        that.items.push(...json.results);
-        that.intervalID = null;
+        that.total = json.total
+        that.currentPage++
+        console.log('that.items', that.items)
+        that.items.push(...json.results)
+        that.intervalID = null
       })
       oReq.addEventListener('error', function () {
         console.error('API not working!')
@@ -65,18 +83,18 @@ export default defineComponent({
         <div id="search-results" class="col-sm-12">
           <div v-for="(item, i) in items" class="pcc-promo-j">
             <h4>
-              <a
-                class="pcc-promo-j-link"
-                :href="item.url"
-                >#{{i}} {{ item.title }}</a
-              >
+              <a class="pcc-promo-j-link" :href="item.url">#{{ i }} {{ item.title }}</a>
             </h4>
             <p>{{ item.search_description }}</p>
             <ul class="breadcrumb hidden-print">
-              <li v-for="crumb in item.breadcrumbs"><a :href="crumb.url">{{ crumb.title }}</a></li>
-              <li><a class="active title-tereo" :href="item.url">{{ item.title }}</a></li>
-            </ul>           
-            <p class="pcc-promo-j-updated mb-0">Last updated: {{ item.latest_revision_created_at }}</p>
+              <li v-for="crumb in item.breadcrumbs">
+                <a :href="crumb.url">{{ crumb.title }}</a>
+              </li>
+              <li>
+                <a class="active title-tereo" :href="item.url">{{ item.title }}</a>
+              </li>
+            </ul>
+            <p class="pcc-promo-j-updated mb-0">Last updated: {{ item.latest_revision_created_at | formatDate }}</p>
           </div>
         </div>
       </div>
